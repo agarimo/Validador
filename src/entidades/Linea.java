@@ -150,13 +150,13 @@ public final class Linea {
         String aux;
         if ((str = regex(linea, this.patronCif)) != null) {
             aux = str;
-            setCif(aux);
+//            setCif(aux);
         } else if ((str = regex(linea, this.patronNie)) != null) {
             aux = str;
-            setNie(aux);
+//            setNie(aux);
         } else if ((str = regex(linea, this.patronDni)) != null) {
             aux = str;
-            setDni(aux);
+//            setDni(aux);
         } else {
             if (getNombre()) {
                 this.tipoJuridico = "E";
