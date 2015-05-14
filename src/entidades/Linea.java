@@ -149,14 +149,17 @@ public final class Linea {
         String str;
         String aux;
         if ((str = regex(linea, this.patronCif)) != null) {
-            aux = str;
+//            aux = str;
 //            setCif(aux);
+            aux = "NO*CONSTA ";
         } else if ((str = regex(linea, this.patronNie)) != null) {
-            aux = str;
+//            aux = str;
 //            setNie(aux);
+            aux = "NO*CONSTA ";
         } else if ((str = regex(linea, this.patronDni)) != null) {
-            aux = str;
+//            aux = str;
 //            setDni(aux);
+            aux = "NO*CONSTA ";
         } else {
             if (getNombre()) {
                 this.tipoJuridico = "E";
