@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import principal.CalculaNif;
 import principal.Main;
 
 public final class Linea {
@@ -22,8 +23,10 @@ public final class Linea {
     String patronDni = "[\\s]{1}[0-9]{6,8}[A-Z]{1}";
     String patronCif = "[\\s]{1}[" + this.cadenaCif + "]{1}[0-9]{8}";
     String patronNie = "[\\s]{1}[" + this.cadenaNie + "]{1}[0-9]{5,7}[A-Z]{1}";
+    CalculaNif cal;
 
     public Linea(String linea) throws SQLException {
+        cal=new CalculaNif();
         this.linea = linea;
         this.componentes = linea.split("\\|");
         limpiaComponentes();
@@ -135,8 +138,8 @@ public final class Linea {
         if (dni == -1) {
             str = "NO*CONSTA ";
         } else {
-            str = str.charAt(0) + completaCeros(Integer.toString(dni), 7) + calculaDni(dni);
-            str = completaEspacios(str);
+            str = cal.calcular(str);
+//            str = str.charAt(0) + completaCeros(Integer.toString(dni), 7) + calculaDni(dni);
         }
         if (!this.testra) {
             this.tipoJuridico = "P";
