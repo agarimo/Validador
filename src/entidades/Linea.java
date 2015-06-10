@@ -1,7 +1,6 @@
 package entidades;
 
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import principal.CalculaNif;
@@ -20,13 +19,10 @@ public final class Linea {
     boolean testra = false;
     String cadenaCif = "ABCDEFGHJKLMNPQRSUVW";
     String cadenaNie = "XYZ";
-    String patronDni = "[\\s]{1}[0-9]{6,8}[A-Z]{1}";
-    String patronCif = "[\\s]{1}[" + this.cadenaCif + "]{1}[0-9]{8}";
-    String patronNie = "[\\s]{1}[" + this.cadenaNie + "]{1}[0-9]{5,7}[A-Z]{1}";
     CalculaNif cal;
 
     public Linea(String linea) throws SQLException {
-        cal=new CalculaNif();
+        cal = new CalculaNif();
         this.linea = linea;
         this.componentes = linea.split("\\|");
         limpiaComponentes();
@@ -70,7 +66,7 @@ public final class Linea {
     }
 
     private void setNif() {
-        String aux = buscaNif(this.componentes[23]);
+        String aux = this.componentes[23];
 
         if (aux.equals("NO*CONSTA ")) {
             if (this.nif.equals("")) {
@@ -96,12 +92,16 @@ public final class Linea {
     }
 
     private void switchNif() {
-        if (this.cadenaCif.contains("" + this.nif.charAt(0))) {
-            setCif(this.nif);
-        } else if (this.cadenaNie.contains("" + this.nif.charAt(0))) {
-            setNie(this.nif);
-        } else {
-            setDni(this.nif);
+        try {
+            if (this.cadenaCif.contains("" + this.nif.charAt(0))) {
+                setCif(this.nif);
+            } else if (this.cadenaNie.contains("" + this.nif.charAt(0))) {
+                setNie(this.nif);
+            } else {
+                setDni(this.nif);
+            }
+        } catch (Exception e) {
+            this.componentes[15] = this.nif;
         }
     }
 
@@ -139,40 +139,11 @@ public final class Linea {
             str = "NO*CONSTA ";
         } else {
             str = cal.calcular(str);
-//            str = str.charAt(0) + completaCeros(Integer.toString(dni), 7) + calculaDni(dni);
         }
         if (!this.testra) {
             this.tipoJuridico = "P";
         }
         this.nif = str;
-    }
-
-    private String buscaNif(String linea) {
-        linea = limpiaConEspacios(linea);
-        String str;
-        String aux;
-        if ((str = regex(linea, this.patronCif)) != null) {
-//            aux = str;
-//            setCif(aux);
-            aux = "NO*CONSTA ";
-        } else if ((str = regex(linea, this.patronNie)) != null) {
-//            aux = str;
-//            setNie(aux);
-            aux = "NO*CONSTA ";
-        } else if ((str = regex(linea, this.patronDni)) != null) {
-//            aux = str;
-//            setDni(aux);
-            aux = "NO*CONSTA ";
-        } else {
-            if (getNombre()) {
-                this.tipoJuridico = "E";
-            } else {
-                this.tipoJuridico = "P";
-            }
-            aux = "NO*CONSTA ";
-        }
-
-        return aux;
     }
 
     private String completaCeros(String str, int num) {
@@ -197,16 +168,6 @@ public final class Linea {
 
     private String limpia(String str) {
         Pattern p = Pattern.compile("[^0-9A-Z]");
-        Matcher m = p.matcher(str);
-
-        if (m.find()) {
-            str = m.replaceAll("");
-        }
-        return str.trim();
-    }
-
-    private String limpiaConEspacios(String str) {
-        Pattern p = Pattern.compile("[^0-9A-ZáéíóúÁÉÍÓÚ\\s]");
         Matcher m = p.matcher(str);
 
         if (m.find()) {
@@ -281,25 +242,9 @@ public final class Linea {
 
     private boolean getArticulo() {
         boolean a = false;
-        Iterator it = Main.listArt.iterator();
 
-        while (it.hasNext()) {
-            String aux = (String) it.next();
+        for (String aux : Main.listArt) {
             if (this.articulo.toUpperCase().contains(aux)) {
-                a = true;
-            }
-        }
-        return a;
-    }
-
-    private boolean getNombre() {
-        boolean a = false;
-        Iterator it = Main.listNombre.iterator();
-
-        while (it.hasNext()) {
-            String aux = (String) it.next();
-
-            if (this.nombre.contains(aux)) {
                 a = true;
             }
         }
