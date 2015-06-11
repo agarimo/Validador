@@ -1,6 +1,7 @@
 package principal;
 
 import entidades.Fase;
+import entidades.Linea;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -29,8 +30,21 @@ public class Main {
         listNombre = new ArrayList();
         lookAndFeel();
         crearArchivos();
+        
+        ejecucionPrueba();
+//        ventana = new Ventana();
+    }
 
-        ventana = new Ventana();
+    private static void ejecucionPrueba() {
+        String nifPrueba = "    ";
+        String lineaTest = "00000|09/06/2015|0905006Z|714|P|20| |ND|98    |270453259104|270453259104        |070215|052.1 RD 1428/0|FRANCO VAZQUEZ, JOSE             |1530FFP   |" + nifPrueba + "|27/TR-JEFATURA PROVINCIAL TRAFICO DE LUGO         |      |N.P|   | |      |27    |270453343802 MUSMAR , ALI X3905935Y LLEIDA 16/03/2015 8459GCG RD 1428/03 048.1 (1)                                                                                                                     |https: sede.dgt.gob.es/WEB_TTRA_CONSULTA/ServletVisualizacion?params=b40%2F90HdbbszJAt0Qedo6uRVnCAGVqVzSfSYVB88GiKWmlHmaRE33F2wbrR6QKlh%0D%0A%26subidioma%3Des&formato=PDF                                                                     |LLEIDA                                           ";
+
+        try {
+            Linea ln=new Linea(lineaTest);
+            System.out.println(ln);
+        } catch (SQLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private static void crearArchivos() {

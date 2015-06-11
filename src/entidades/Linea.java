@@ -39,12 +39,8 @@ public final class Linea {
         this.nombre = this.componentes[13];
 
         setPuntos();
-        if (this.testra) {
-            setNifTestra();
-        } else {
-            setNif();
-            setFase();
-        }
+        setFase();
+        setNif();
     }
 
     private void limpiaComponentes() {
@@ -66,22 +62,6 @@ public final class Linea {
     }
 
     private void setNif() {
-        String aux = this.componentes[23];
-
-        if (aux.equals("NO*CONSTA ")) {
-            if (this.nif.equals("")) {
-                this.nif = "NO*CONSTA ";
-                this.componentes[15] = this.nif;
-            } else {
-                switchNif();
-                this.componentes[15] = this.nif;
-            }
-        } else {
-            this.componentes[15] = this.nif;
-        }
-    }
-
-    private void setNifTestra() {
         if (this.nif.equals("")) {
             this.nif = "NO*CONSTA ";
             this.componentes[15] = this.nif;
@@ -107,6 +87,11 @@ public final class Linea {
 
     private void setCif(String str) {
         str = str.trim();
+
+        if (str.length() == 8) {
+            str = cal.calcular(str);
+        }
+
         str = completaEspacios(str);
         if (!this.testra) {
             this.tipoJuridico = "E";
@@ -115,31 +100,30 @@ public final class Linea {
     }
 
     private void setDni(String str) {
-        str = limpia(str);
 
-        int dni = getNumero(str);
-        if (dni == -1) {
-            str = "NO*CONSTA ";
-        } else {
-            str = Integer.toString(dni) + calculaDni(dni);
-            str = completaCeros(str, 9);
-            str = completaEspacios(str);
+        if (str.length() <= 8) {
+            str=cal.calcular(str);
+        } else if (str.length() >= 9) {
+            str=str;
         }
+
         if (!this.testra) {
             this.tipoJuridico = "P";
         }
+        str = completaEspacios(str);
         this.nif = str;
     }
 
     private void setNie(String str) {
-        str = limpia(str);
-
-        int dni = getNumero(str);
-        if (dni == -1) {
-            str = "NO*CONSTA ";
-        } else {
-            str = cal.calcular(str);
+        
+        if (str.length() < 8) {
+            str=str;
+        } else if (str.length()==8) {
+            str=cal.calcular(str);
+        }else if (str.length()>=9){
+            str=str;
         }
+        
         if (!this.testra) {
             this.tipoJuridico = "P";
         }
@@ -249,25 +233,6 @@ public final class Linea {
             }
         }
         return a;
-    }
-
-    public static String regex(String str, String patron) {
-        String aux = null;
-
-        Pattern pt = Pattern.compile(patron);
-        Matcher mt = pt.matcher(str);
-
-        if (mt.find()) {
-            aux = mt.group();
-        }
-        return aux;
-    }
-
-    public static boolean buscaRegex(String str, String patron) {
-        Pattern pt = Pattern.compile(patron);
-        Matcher mt = pt.matcher(str);
-
-        return mt.find();
     }
 
     private String recomponerLinea() {
