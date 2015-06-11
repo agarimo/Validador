@@ -31,8 +31,8 @@ public class Main {
         lookAndFeel();
         crearArchivos();
         
-        ejecucionPrueba();
-//        ventana = new Ventana();
+//        ejecucionPrueba();
+        ventana = new Ventana();
     }
 
     private static void ejecucionPrueba() {
